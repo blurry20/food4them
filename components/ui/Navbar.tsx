@@ -26,7 +26,7 @@ export const Navbar = () => {
     return (
         <AppBar>
             <Toolbar>
-                <NextLink href='/' passHref>
+                <NextLink href='/' passHref >
                     <Link display='flex' alignItems='center'>
                         <Typography variant='h6'>FOOD4THEM |</Typography>
                         <Typography sx={{ ml: 0.5 }}>Shop</Typography>
@@ -109,7 +109,7 @@ export const Navbar = () => {
                     <SearchOutlined />
                 </IconButton>
 
-                <NextLink href="/cart" passHref>
+                <NextLink href="/cart" passHref >
                     <Link>
                         <IconButton>
                             <Badge badgeContent={ numberOfItems > 9 ? '+9': numberOfItems  } color="secondary">
