@@ -162,7 +162,9 @@ const OrderPage: NextPage<Props> = ({ order }) => {
                                             }}
                                             onApprove={(data, actions) => {
                                                 return actions.order!.capture().then((details) => {
-                                                    onOrderCompleted( details );
+                                                    onOrderCompleted(
+                                                        details as OrderResponseBody
+                                                    );
                                                     // console.log({ details  })
                                                     // const name = details.payer.name.given_name;
                                                     // alert(`Transaction completed by ${name}`);
