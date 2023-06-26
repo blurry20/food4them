@@ -1,7 +1,7 @@
 services:
   teslodb:
     image: mongo:5.0.0
-    container_name: food4themdb
+    container_name: food4them
     ports:
       - 27017:27017
     volumes:

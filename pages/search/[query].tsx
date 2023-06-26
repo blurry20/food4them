@@ -20,7 +20,7 @@ const SearchPage: NextPage<Props> = ({ products, foundProducts, query }) => {
 
 
   return (
-    <ShopLayout title={'Teslo-Shop - Search'} pageDescription={'Encuentra los mejores productos de Teslo aquí'}>
+    <ShopLayout title={'Food4them-Shop - Search'} pageDescription={'Encuentra los mejores productos de mascotas'}>
         <Typography variant='h1' component='h1'>Buscar productos</Typography>
 
         {
