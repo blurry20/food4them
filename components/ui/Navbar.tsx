@@ -37,17 +37,17 @@ export const Navbar = () => {
 
                 <Box sx={{ display: isSearchVisible ? 'none' : { xs: 'none', sm: 'block' } }}
                     className="fadeIn">
-                    <NextLink href='/category/men' passHref>
+                    <NextLink href='/category/dog' passHref>
                         <Link>
                             <Button color={ asPath === '/category/dog' ? 'primary':'info'}>Perros</Button>
                         </Link>
                     </NextLink>
-                    <NextLink href='/category/women' passHref>
+                    <NextLink href='/category/cat' passHref>
                         <Link>
                             <Button color={ asPath === '/category/cat' ? 'primary':'info'}>Gatos</Button>
                         </Link>
                     </NextLink>
-                    <NextLink href='/category/kid' passHref>
+                    <NextLink href='/category/birds' passHref>
                         <Link>
                             <Button color={ asPath === '/category/birds' ? 'primary':'info'}>Aves</Button>
                         </Link>
