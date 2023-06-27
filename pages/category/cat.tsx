@@ -12,7 +12,7 @@ import { FullScreenLoading } from '../../components/ui';
 const CatPage: NextPage = () => {
 
 
-  const { products, isLoading } = useProducts('/products?gender=cat');
+  const { products, isLoading } = useProducts('/products?mascot=cat');
 
 
   return (
