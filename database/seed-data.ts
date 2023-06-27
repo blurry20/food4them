@@ -1,5 +1,15 @@
 import bcrypt from 'bcryptjs';
 
+interface SeedProvider {
+    name: string;
+    contact: string;
+    email: string;
+    phone: string;
+    address: string;
+    city: string;
+    country: string;
+}
+
 interface SeedProduct {
     description: string;
     brand: string;
@@ -31,13 +41,33 @@ type ValidTypes = 'alimento'|'juguete'|'accesorios';
 interface SeedData {
     users: SeedUser[];
     products: SeedProduct[];
+    providers: SeedProvider[];
 }
 
 
-
-
-
 export const initialData: SeedData = {
+    providers: [
+        {
+            name: 'Omega Foods',
+            contact: 'Juan Perez',
+            email: 'j.perez@ofood.cl',
+            phone: '+569 1234 5678',
+            address: 'Av. Providencia 1234',
+            city: 'Santiago',
+            country: 'Chile'
+        },
+        {
+            name: 'Omega Toys',
+            contact: 'Juan Gonzalez',
+            email: 'j.perez@otoys.cl',
+            phone: '+569 1234 5611',
+            address: 'Av. Providencia 1134',
+            city: 'Valparaiso',
+            country: 'Chile'
+        },
+
+    ],
+    
     users: [
         {
             name: 'Admin',

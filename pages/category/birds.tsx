@@ -12,7 +12,7 @@ import { FullScreenLoading } from '../../components/ui';
 const BirdsPage: NextPage = () => {
 
 
-  const { products, isLoading } = useProducts('/products?gender=birds');
+  const { products, isLoading } = useProducts('/products?mascot=birds');
 
 
   return (

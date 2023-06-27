@@ -12,7 +12,7 @@ import { FullScreenLoading } from '../../components/ui';
 const ExoticsPage: NextPage = () => {
 
 
-  const { products, isLoading } = useProducts('/products?gender=exotics');
+  const { products, isLoading } = useProducts('/products?mascot=exotics');
 
 
   return (
