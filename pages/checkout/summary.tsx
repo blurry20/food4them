@@ -51,9 +51,10 @@ const SummaryPage = () => {
     const { firstName, lastName, address, address2 = '', city, country, phone, zip } = shippingAddress;
 
     const handleSubmit = (e: any) => {
+        e.preventDefault();
         const mail = e.target[0].value
         const subject = e.target[1].value
-        console.log(mail);
+        console.log(mail, subject);
         return axios({
             method: 'post',
             url: '/api/send-email',
@@ -62,7 +63,7 @@ const SummaryPage = () => {
               subject: subject
             },
           });
-        e.preventDefault();
+        
     }
 
   return (
@@ -133,7 +134,7 @@ const SummaryPage = () => {
                             <form onSubmit={handleSubmit}>
                                 <input type="mail" placeholder='email'/>
                                 <input type="text" placeholder='texto que saldra en mail'/>
-                                <button type='submit'></button>
+                                <button type='submit'>Enviar mail</button>
                             </form>
                         </Box>
 
