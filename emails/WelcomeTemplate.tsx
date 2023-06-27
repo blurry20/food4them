@@ -8,7 +8,7 @@ export default function WelcomeEmail() {
     <Html>
       <Section style={main}>
         <Container style={container}>
-          <Text style={heading}>Esto es una prueba</Text>
+          <Text style={heading}>uwu</Text>
           <br />
           <Text style={paragraph}>No respondas a este mensaje</Text>
           <Text style={paragraph}>Nombre del cliente</Text>
