@@ -8,6 +8,7 @@ import { Link, Box, Button, Card, CardContent, Divider, Grid, Typography, Chip }
 import { CartContext } from '../../context';
 import { ShopLayout } from '../../components/layouts/ShopLayout';
 import { CartList, OrderSummary } from '../../components/cart';
+import axios from 'axios';
 // import { countries } from '../../utils';
 
 
@@ -48,6 +49,21 @@ const SummaryPage = () => {
     }
 
     const { firstName, lastName, address, address2 = '', city, country, phone, zip } = shippingAddress;
+
+    const handleSubmit = (e: any) => {
+        const mail = e.target[0].value
+        const subject = e.target[1].value
+        console.log(mail);
+        return axios({
+            method: 'post',
+            url: '/api/send-email',
+            data: {
+              to: mail,
+              subject: subject
+            },
+          });
+        e.preventDefault();
+    }
 
   return (
     <ShopLayout title='Resumen de orden' pageDescription={'Resumen de la orden'}>
@@ -111,6 +127,14 @@ const SummaryPage = () => {
                             />
 
 
+                        </Box>
+
+                        <Box sx={{ mt: 3 }} display="flex" flexDirection="column">
+                            <form onSubmit={handleSubmit}>
+                                <input type="mail" placeholder='email'/>
+                                <input type="text" placeholder='texto que saldra en mail'/>
+                                <button type='submit'></button>
+                            </form>
                         </Box>
 
                     </CardContent>
