@@ -7,11 +7,16 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse
 ) {
-  await sendEmail({
-    to: "daigo.tnt@gmail.com",
-    subject: "Esto es una prueba",
-    html: render(WelcomeTemplate()),
-  });
+  console.log(req.body);
+  
+  if (req.method === 'POST') {
+    await sendEmail({
+      to: req.body.to,
+      subject: req.body.subject,
+      html: render(WelcomeTemplate()),
+    });
+  }
+  
 
   return res.status(200).json({ message: "Email sent successfully" });
 }
