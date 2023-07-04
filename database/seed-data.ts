@@ -1,4 +1,5 @@
 import bcrypt from 'bcryptjs';
+import { Provider } from '../models';
 
 interface SeedProduct {
     description: string;
@@ -13,7 +14,15 @@ interface SeedProduct {
     type: ValidTypes;
     mascot: 'dog'|'cat'|'birds'|'exotics';
 }
-
+interface SeedProvider {
+    name: string;
+    email: string;
+    contact: string;
+    phone: string;
+    address: string;
+    city: string;
+    country: string;
+  }
 interface SeedUser {
     name     : string;
     email    : string;
@@ -31,6 +40,7 @@ type ValidTypes = 'alimento'|'juguete'|'accesorios';
 interface SeedData {
     users: SeedUser[];
     products: SeedProduct[];
+    providers: SeedProvider[];
 }
 
 
@@ -38,6 +48,18 @@ interface SeedData {
 
 
 export const initialData: SeedData = {
+    providers:[
+        {
+            name:'Proveedor la Pincoya',
+            email: 'pincoya@mail.com',
+            contact:'Pincorio',
+            phone:'99999999999999',
+            address:'av la piconya ',
+            city:'pinmcoya',
+            country:'shile'
+
+        }
+    ],
     users: [
         {
             name: 'Admin',
