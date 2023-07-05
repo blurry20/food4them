@@ -2,22 +2,32 @@ import { useContext, useEffect, useState } from 'react';
 import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 import Cookies from 'js-cookie';
+import useSWR from 'swr';
+import { AuthContext } from '../../context/auth/AuthContext';
 
 import { Link, Box, Button, Card, CardContent, Divider, Grid, Typography, Chip } from '@mui/material';
 
 import { CartContext } from '../../context';
 import { ShopLayout } from '../../components/layouts/ShopLayout';
 import { CartList, OrderSummary } from '../../components/cart';
+import { IUser } from '../../interfaces';
+import { tesloApi } from '../../api';
+import axios from 'axios';
 // import { countries } from '../../utils';
 
-
 const SummaryPage = () => {
+
+    const { user } = useContext(AuthContext);
+    const { email } = user || {};
 
     const router = useRouter();
     const { shippingAddress, numberOfItems, createOrder } = useContext( CartContext );
 
     const [isPosting, setIsPosting] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
+
+    const { data: userData, error } = useSWR<IUser[]>('/api/admin/users');
+
     
     useEffect(() => {
         if ( !Cookies.get('firstName') ) {
@@ -38,7 +48,33 @@ const SummaryPage = () => {
         }
 
         router.replace(`/orders/${ message }`);
+        const mail = email;
+        const subject = 'Su orden ' +message+ ' ha sido recibida'
 
+        console.log(mail);
+        console.log(subject);
+        console.log(firstName);
+
+
+        return axios({
+            method: 'post',
+            url: '/api/send-email',
+            data: {
+              to: mail,
+              subject: subject,
+              name: firstName,
+              name2: lastName,
+              orderId: message,
+              address: address,
+                address2: address2,
+                city: city,
+                country: country,
+                phone: phone,
+                zip: zip,
+                order: message
+     
+            },
+          });
     }
 
 

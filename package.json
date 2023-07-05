@@ -34,7 +34,8 @@
     "react-email": "1.9.4",
     "react-hook-form": "^7.27.1",
     "react-slideshow-image": "^3.7.0",
-    "swr": "^1.2.1"
+    "swr": "^1.2.1",
+    "yarn": "^1.22.19"
   },
   "devDependencies": {
     "@types/formidable": "^2.0.4",
