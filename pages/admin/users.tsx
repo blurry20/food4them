@@ -66,9 +66,7 @@ const UsersPage = () => {
                         sx={{ width: '300px' }}
                     >
                         <MenuItem value='admin'> Admin </MenuItem>
-                        <MenuItem value='client'> Client </MenuItem>
-                        <MenuItem value='super-user'> Super User </MenuItem>
-                        <MenuItem value='SEO'> SEO </MenuItem>
+                        <MenuItem value='client'> Cliente </MenuItem>
                     </Select>
                 )
             }

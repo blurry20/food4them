@@ -1,4 +1,4 @@
-import { FC, useContext } from 'react';
+import { FC, useContext, useEffect } from 'react';
 import { Grid, Typography } from '@mui/material';
 import { CartContext } from '../../context/cart/CartContext';
 import { currency } from '../../utils';
@@ -18,8 +18,14 @@ export const OrderSummary: FC<Props> = ({ orderValues }) => {
     const { numberOfItems, subTotal, total, tax } = useContext( CartContext );
     
     const summaryValues = orderValues ? orderValues : { numberOfItems, subTotal, total, tax };
-  
     
+    useEffect(() => {
+        console.log('Products in Cart:');
+        console.log(numberOfItems);
+        console.log(subTotal);
+        console.log(total);
+        console.log(tax);
+    }, [numberOfItems, subTotal, total, tax]);
 
   return (
     <Grid container>
