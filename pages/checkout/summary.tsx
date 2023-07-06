@@ -55,7 +55,7 @@ const SummaryPage = () => {
         doc.text(`Customer: ${firstName} ${lastName}`, 10, 30);
         doc.text(`Address: ${address}, ${city}, ${zip}, ${country}`, 10, 40);
         doc.text(`Phone: ${phone}`, 10, 50);
-        doc.text(`Title: ${Title}`, 10, 60);
+        
 
         // Loop through cart items and add them to the PDF
         let startY = 60;

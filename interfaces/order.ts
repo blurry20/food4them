@@ -45,5 +45,4 @@ export interface ShippingAddress {
     city     : string;
     country  : string;
     phone    : string;
-    title    : string;
 }
