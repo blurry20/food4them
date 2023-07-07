@@ -107,7 +107,7 @@ const ProductPage:NextPage<Props> = ({ product }) => {
                     {
                       tempCartProduct.size
                         ? 'Agregar al carrito'
-                        : 'Seleccione una talla'
+                        : 'Seleccione un tamaño'
                     }
                   </Button>
                )
