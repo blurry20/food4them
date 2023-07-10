@@ -3,7 +3,7 @@ import { GetServerSideProps } from 'next'
 import { useRouter } from 'next/router';
 import { useForm } from 'react-hook-form';
 
-import { Box, Button, capitalize, Card, CardActions, CardMedia, Checkbox, Chip, Divider, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, ListItem, Paper, Radio, RadioGroup, TextField } from '@mui/material';
+import { Alert, Box, Button, capitalize, Card, CardActions, CardMedia, Checkbox, Chip, Divider, FormControl, FormControlLabel, FormGroup, FormLabel, Grid, ListItem, Paper, Radio, RadioGroup, TextField } from '@mui/material';
 import { DriveFileRenameOutline, SaveOutlined, UploadOutlined } from '@mui/icons-material';
 
 import { AdminLayout } from '../../../components/layouts'
@@ -43,6 +43,7 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
     const fileInputRef = useRef<HTMLInputElement>(null)
     const [ newTagValue, setNewTagValue ] = useState('');
     const [isSaving, setIsSaving] = useState(false);
+    const [isChangesApplied, setIsChangesApplied] = useState(false); // Added state variable
 
     const { register, handleSubmit, formState:{ errors }, getValues, setValue, watch } = useForm<FormData>({
         defaultValues: product
@@ -142,6 +143,10 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
                 router.replace(`/admin/products/${ form.slug }`);
             } else {
                 setIsSaving(false)
+                setIsChangesApplied(true); // Set isChangesApplied to true after saving
+                setTimeout(() => {
+                    setIsChangesApplied(false); // Reset isChangesApplied after 5 seconds
+                  }, 5000);
             }
 
 
@@ -272,7 +277,7 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
                         </FormControl>
 
                         <FormGroup>
-                            <FormLabel>Tallas</FormLabel>
+                            <FormLabel>Tamaños</FormLabel>
                             {
                                 validSizes.map(size => (
                                     <FormControlLabel
@@ -392,7 +397,12 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
                                     ))
                                 }
                             </Grid>
-
+                                {/* Conditional rendering of "Cambios aplicados" message */}
+                                {isChangesApplied && (
+                                <Box display="flex" justifyContent="center" mt={2}>
+                                    <Alert severity="success">Cambios aplicados</Alert>
+                                </Box>
+                                )}
                         </Box>
 
                     </Grid>
