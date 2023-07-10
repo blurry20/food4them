@@ -1,14 +1,5 @@
 import bcrypt from 'bcryptjs';
-
-interface SeedProvider {
-    name: string;
-    contact: string;
-    email: string;
-    phone: string;
-    address: string;
-    city: string;
-    country: string;
-}
+import { Provider } from '../models';
 
 interface SeedProduct {
     description: string;
@@ -23,7 +14,15 @@ interface SeedProduct {
     type: ValidTypes;
     mascot: 'dog'|'cat'|'birds'|'exotics';
 }
-
+interface SeedProvider {
+    name: string;
+    email: string;
+    contact: string;
+    phone: string;
+    address: string;
+    city: string;
+    country: string;
+  }
 interface SeedUser {
     name     : string;
     email    : string;
@@ -45,29 +44,22 @@ interface SeedData {
 }
 
 
-export const initialData: SeedData = {
-    providers: [
-        {
-            name: 'Omega Foods',
-            contact: 'Juan Perez',
-            email: 'j.perez@ofood.cl',
-            phone: '+569 1234 5678',
-            address: 'Av. Providencia 1234',
-            city: 'Santiago',
-            country: 'Chile'
-        },
-        {
-            name: 'Omega Toys',
-            contact: 'Juan Gonzalez',
-            email: 'j.perez@otoys.cl',
-            phone: '+569 1234 5611',
-            address: 'Av. Providencia 1134',
-            city: 'Valparaiso',
-            country: 'Chile'
-        },
 
+
+
+export const initialData: SeedData = {
+    providers:[
+        {
+            name:'Proveedor la Pincoya',
+            email: 'pincoya@mail.com',
+            contact:'Pincorio',
+            phone:'99999999999999',
+            address:'av la piconya ',
+            city:'pinmcoya',
+            country:'shile'
+
+        }
     ],
-    
     users: [
         {
             name: 'Admin',

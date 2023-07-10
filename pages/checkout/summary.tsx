@@ -16,14 +16,19 @@ import jsPDF from 'jspdf';
 const SummaryPage = () => {
     const { user } = useContext(AuthContext);
     const { email } = user || {};
+    
 
     const router = useRouter();
-    const { shippingAddress, numberOfItems, createOrder } = useContext(CartContext);
+    const { shippingAddress, numberOfItems, createOrder, cart } = useContext(CartContext);
 
     const [isPosting, setIsPosting] = useState(false);
     const [errorMessage, setErrorMessage] = useState('');
 
     const { data: userData, error } = useSWR<IUser[]>('/api/admin/users');
+    
+
+
+
 
     useEffect(() => {
         if (!Cookies.get('firstName')) {
@@ -33,6 +38,31 @@ const SummaryPage = () => {
 
     const onCreateOrder = async () => {
         setIsPosting(true);
+
+        const productRows = cart.map((item, index) => {
+            const { title, quantity } = item;
+            return `<tr>
+                        <td>${title}</td>
+                        <td>${quantity}</td>
+                    </tr>`;
+        });
+    
+        const tableContent = `<table style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr>
+                <th style="border: 1px solid #ddd; padding: 8px; text-align: center;">Productos</th>
+                <th style="border: 1px solid #ddd; padding: 8px; text-align: center;">Cantidad</th>
+            </tr>
+        </thead>
+        <tbody>
+            ${productRows.join('')}
+        </tbody>
+        </table>`;
+
+
+        //const productInfo = cart.map((item, index) => {
+        //    return `Product ${index + 1}: ${item.title}, Quantity: ${item.quantity}`;
+        //});
 
         const { hasError, message } = await createOrder();
 
@@ -45,20 +75,18 @@ const SummaryPage = () => {
         router.replace(`/orders/${message}`);
 
         const subject = 'Su orden ' + message + ' ha sido recibida';
-        const doc = new jsPDF();
-        doc.setFontSize(20);
-        doc.text('Invoice', 10, 10);
+        //const doc = new jsPDF();
+        //doc.setFontSize(20);
+        //doc.text('Invoice', 10, 10);
+//
+        //doc.setFontSize(12);
+        //doc.text(`Order ID: ${message}`, 10, 20);
+        //doc.text(`Customer: ${firstName} ${lastName}`, 10, 30);
+        //doc.text(`Address: ${address}, ${city}, ${zip}, ${country}`, 10, 40);
+        //doc.text(`Phone: ${phone}`, 10, 50);
+        
 
-        doc.setFontSize(12);
-        doc.text(`Order ID: ${message}`, 10, 20);
-        doc.text(`Customer: ${firstName} ${lastName}`, 10, 30);
-        doc.text(`Address: ${address}, ${city}, ${zip}, ${country}`, 10, 40);
-        doc.text(`Phone: ${phone}`, 10, 50);
-
-        // Loop through cart items and add them to the PDF
-        let startY = 60;
-
-        doc.save('summary.pdf');
+        //doc.save('summary.pdf');
 
         return axios({
             method: 'post',
@@ -75,10 +103,12 @@ const SummaryPage = () => {
                 country: country,
                 phone: phone,
                 zip: zip,
-                order: message
+                order: tableContent,
             }
         });
     };
+
+
 
     if (!shippingAddress) {
         return <></>;
