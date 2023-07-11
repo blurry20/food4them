@@ -1,6 +1,7 @@
 import { db } from '.';
-import { Provider } from '../models';
-import { IProvider } from '../interfaces';
+import { IProvider } from '../interfaces/provider';
+import Provider from '../models/Provider';
+
 
 export const getAllProviders = async(): Promise<IProvider[]> => {
 
@@ -11,5 +12,4 @@ export const getAllProviders = async(): Promise<IProvider[]> => {
     return JSON.parse( JSON.stringify( providers ) );
 
 }
-
 

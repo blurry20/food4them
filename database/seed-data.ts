@@ -73,12 +73,6 @@ export const initialData: SeedData = {
             password: bcrypt.hashSync('123456'),
             role: 'client'
         },
-        {
-            name: 'Daniel Avila',
-            email: 'daigo.tnt@gmail.com',
-            password: bcrypt.hashSync('123456'),
-            role: 'client'
-        },
     ],
     products: [
         {
@@ -88,7 +82,7 @@ export const initialData: SeedData = {
             'Alimento-perro-adulto-carne-15-kg.jpg',
             'zoomed-1.png',
         ],
-        inStock: 755,
+        inStock: 7,
         price: 25890,
         sizes: ['5kg','10kg','15kg','20kg','25kg','30kg','35kg','40kg','45kg','50kg'],
         slug: "alimento-perro-adulto-carne-15-kg",
@@ -121,7 +115,7 @@ export const initialData: SeedData = {
             'alimento-mazuri-large-bird-diet-alimento-para-aves-grandes.jpg',
             'zoomed-3.png',
         ],
-        inStock: 337,
+        inStock: 7,
         price: 25890,
         sizes: ['5kg','10kg','15kg','20kg','25kg','30kg','35kg','40kg','45kg','50kg'],
         slug: "alimento-mazuri-large-bird-diet-alimento-para-aves-grandes",
@@ -138,7 +132,7 @@ export const initialData: SeedData = {
             'Loros-cara-min.png',
             'zoomed-4.png',
         ],
-        inStock: 72,
+        inStock: 7,
         price: 25890,
         sizes: ['5kg','10kg','15kg','20kg','25kg','30kg','35kg','40kg','45kg','50kg'],
         slug: "loros-cara-min",
@@ -154,7 +148,7 @@ export const initialData: SeedData = {
             'juguete perro.jpg',
             'zoomed-5.png',
         ],
-        inStock: 17,
+        inStock: 7,
         price: 2990,
         sizes: ['5kg','10kg','15kg','20kg','25kg','30kg','35kg','40kg','45kg','50kg'],
         slug: "juguete-perro",

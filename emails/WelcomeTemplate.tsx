@@ -2,7 +2,6 @@ import { Html } from "@react-email/html";
 import { Text } from "@react-email/text";
 import { Section } from "@react-email/section";
 import { Container } from "@react-email/container";
-import { OrderSummary } from "../components/cart";
 
 export default function WelcomeEmail() {
   return (
@@ -20,8 +19,8 @@ export default function WelcomeEmail() {
             <li>Producto 2</li>
             <li>Producto 3</li>
           </ul>
-          <Text style={paragraph}>Precio total: </Text>
-          <Text style={paragraph}>Dirección de enví {{}} </Text>
+          <Text style={paragraph}>Precio total:</Text>
+          <Text style={paragraph}>Dirección de envío: </Text>
         </Container>
       </Section>
     </Html>
