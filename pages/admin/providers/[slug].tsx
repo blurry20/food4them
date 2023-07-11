@@ -32,7 +32,7 @@ const ProviderForm = ({ provider }: Props) => {
       setIsSaving(true);
 
       const { data } = await tesloApi({
-        url: "/api/admin/providers",
+        url: "/admin/providers",
         method: provider._id ? "PUT" : "POST",
         data: form,
       });
@@ -47,6 +47,7 @@ const ProviderForm = ({ provider }: Props) => {
     } catch (error) {
       console.log(error);
       setIsSaving(false);
+      
     }
   };
 

@@ -7,20 +7,20 @@ import { Grid, Box, Button } from '@mui/material';
 
 import { AdminLayout } from '../../components/layouts';
 import { IProvider } from '../../interfaces';
-import { tesloApi } from '../../api';
+
 import { Provider } from '../../models';
 
 const ProvidersPage = () => {
-  const { data, error } = useSWR<IProvider[]>('/api/admin/providers');
+  const { data, error } = useSWR<{ providers: IProvider[] }>('/api/admin/providers');
   const [providers, setProviders] = useState<IProvider[]>([]);
 
   useEffect(() => {
     if (data) {
-      setProviders(data);
+      setProviders(data.providers);
     }
   }, [data]);
 
-  if (!data && !error) return <></>;
+  if (error) return <div>Error loading providers</div>;
 
   const columns: GridColDef[] = [
     { field: 'name', headerName: 'Nombre de Empresa', width: 250 },
