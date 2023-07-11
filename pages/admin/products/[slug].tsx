@@ -139,7 +139,7 @@ const ProductAdminPage:FC<Props> = ({ product }) => {
 
             console.log({data});
             if ( !form._id ) {
-                router.replace(`/admin/products/${ form.slug }`);
+                router.push(`/admin/products/`);
             } else {
                 setIsSaving(false)
             }
