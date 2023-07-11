@@ -1,85 +1,116 @@
-import { NextApiRequest, NextApiResponse } from 'next';
-import { Types } from 'mongoose';
-import { IProvider } from '../../interfaces';
-import { db } from '../../database';
-import { Provider } from '../../models';
+import { useState, useEffect } from 'react';
+import { PeopleOutline } from '@mui/icons-material'
+import useSWR from 'swr';
 
-type Data = {
-  providers?: IProvider[];
-  error?: string;
-  message?: string;
-};
+import { DataGrid, GridColDef, GridRenderCellParams } from '@mui/x-data-grid';
+import { Grid, Select, MenuItem } from '@mui/material';
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
-  try {
-    await db.connect();
+import { AdminLayout } from '../../components/layouts'
+import { IUser } from '../../interfaces';
+import { tesloApi } from '../../api';
 
-    if (req.method === 'GET') {
-      // Retrieve all providers
-      const providers = await Provider.find().lean() as IProvider[];
-      await db.disconnect();
 
-      return res.status(200).json({ providers });
-    } else if (req.method === 'POST') {
-      // Create a new provider
-      const newProvider = req.body; // Assuming the request body contains the new provider data
-      const provider = await createProvider(newProvider);
-      await db.disconnect();
 
-      return res.status(201).json({ providers: [provider] });
-    } else if (req.method === 'PUT') {
-      // Update an existing provider
-      const providerId = req.query.id; // Assuming the provider ID is passed as a query parameter
 
-      if (typeof providerId !== 'string' || !Types.ObjectId.isValid(providerId)) {
-        return res.status(400).json({ error: 'Invalid provider ID' });
+const ProvidersPage = () => {
+
+    const { data, error } = useSWR<IUser[]>('/api/admin/users');
+    const [ users, setUsers ] = useState<IUser[]>([]);
+
+
+    useEffect(() => {
+      if (data) {
+          setUsers(data);
       }
+    }, [data])
+    
 
-      const updatedProvider = req.body; // Assuming the request body contains the updated provider data
-      const provider = await Provider.findByIdAndUpdate(providerId, updatedProvider, { new: true }).lean() as IProvider;
-      await db.disconnect();
+    if ( !data && !error ) return (<></>);
 
-      if (provider) {
-        return res.status(200).json({ providers: [provider] });
-      } else {
-        return res.status(404).json({ error: 'Provider not found' });
-      }
-    } else if (req.method === 'DELETE') {
-      // Delete multiple existing providers
-      const { selectedRows } = req.body; // Assuming selectedRows is an array of provider IDs
+    const onRoleUpdated = async( userId: string, newRole: string ) => {
 
-      if (!Array.isArray(selectedRows)) {
-        return res.status(400).json({ error: 'Invalid request' });
-      }
+        const previosUsers = users.map( user => ({ ...user }));
+        const updatedUsers = users.map( user => ({
+            ...user,
+            role: userId === user._id ? newRole : user.role
+        }));
 
-      const deleteResult = await Provider.deleteMany({ _id: { $in: selectedRows } });
-      await db.disconnect();
+        setUsers(updatedUsers);
 
-      if (deleteResult.deletedCount > 0) {
-        return res.status(200).json({ message: 'Providers deleted successfully' });
-      } else {
-        return res.status(404).json({ error: 'Providers not found' });
-      }
-    } else {
-      return res.status(405).json({ error: 'Method Not Allowed' });
+        try {
+            
+            await tesloApi.put('/admin/users', {  userId, role: newRole });
+
+        } catch (error) {
+            setUsers( previosUsers );
+            console.log(error);
+            alert('No se pudo actualizar el role del usuario');
+        }
+
     }
-  } catch (error) {
-    console.error(error); // Log the error
-    return res.status(500).json({ error: 'Internal Server Error' });
-  }
+
+
+    const columns: GridColDef[] = [
+        { field: 'name', headerName: 'Nombre de Empresa', width: 250},
+        { field: 'contact', headerName: 'Nombre de Contacto', width: 300 },
+        { field: 'email', headerName: 'Correo', width: 250 },
+        { field: 'phone', headerName: 'Telefono', width: 300},
+        { field: 'address', headerName: 'Direccion', width: 300},
+        { field: 'city', headerName: 'Ciudad', width: 300},
+        { field: 'state', headerName: 'País', width: 300},
+        {
+            field: 'role', 
+            headerName: 'Rol', 
+            width: 300,
+            renderCell: ({row}: GridRenderCellParams) => {
+                return (
+                    <Select
+                        value={ row.role }
+                        label="Rol"
+                        onChange={ ({ target }) => onRoleUpdated( row.id, target.value ) }
+                        sx={{ width: '300px' }}
+                    >
+                        <MenuItem value='admin'> Admin </MenuItem>
+                        <MenuItem value='client'> Client </MenuItem>
+                        <MenuItem value='super-user'> Super User </MenuItem>
+                        <MenuItem value='SEO'> SEO </MenuItem>
+                    </Select>
+                )
+            }
+        },
+    ];
+
+    const rows = users.map( user => ({
+        id: user._id,
+        email: user.email,
+        name: user.name,
+        role: user.role
+    }))
+
+
+  return (
+    <AdminLayout 
+        title={'Proveedores'} 
+        subTitle={'Mantenimiento de proveedores'}
+        icon={ <PeopleOutline /> }
+    >
+
+
+        <Grid container className='fadeIn'>
+            <Grid item xs={12} sx={{ height:650, width: '100%' }}>
+                <DataGrid 
+                    rows={ rows }
+                    columns={ columns }
+                    pageSize={ 10 }
+                    rowsPerPageOptions={ [10] }
+                />
+
+            </Grid>
+        </Grid>
+
+
+    </AdminLayout>
+  )
 }
 
-const createProvider = async (providerData: IProvider): Promise<IProvider> => {
-  try {
-    // Exclude the _id field from the providerData
-    const { _id, ...dataWithoutId } = providerData;
-
-    const provider = new Provider(dataWithoutId); // Create a new instance of the Provider model
-    await provider.save(); // Save the provider to the database
-
-    return provider;
-  } catch (error) {
-    console.error(error); // Log the error
-    throw new Error('Error creating provider');
-  }
-};
+export default ProvidersPage

@@ -1,15 +1,24 @@
 import { GetServerSideProps } from "next";
+import { IProvider } from "../../../interfaces/provider";
+import Provider from "../../../models/Provider";
 import { useRouter } from "next/router";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Box, Button, Grid, TextField } from "@mui/material";
-import { DriveFileRenameOutline, SaveOutlined } from "@mui/icons-material";
-import { AdminLayout } from "../../../components/layouts";
-import { IProvider } from "../../../interfaces/provider";
-import Provider from "../../../models/Provider";
 import tesloApi from "../../../api/tesloApi";
+import { DriveFileRenameOutline, SaveOutlined, UploadOutlined } from "@mui/icons-material";
+import { Box, Button, Grid, TextField, Divider, FormControl, FormLabel, RadioGroup, FormControlLabel, Radio, capitalize, FormGroup, Checkbox, Chip, Card, CardMedia, CardActions } from "@mui/material";
+import { AdminLayout } from "../../../components/layouts";
 
-interface FormData extends IProvider {}
+interface FormData {
+  _id: string;
+  name: string;
+  email: string;
+  contact: string;
+  phone: string;
+  address: string;
+  city: string;
+  country: string;
+}
 
 interface Props {
   provider: IProvider;
@@ -17,59 +26,59 @@ interface Props {
 
 const ProviderForm = ({ provider }: Props) => {
   const router = useRouter();
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [newTagValue, setNewTagValue] = useState("");
   const [isSaving, setIsSaving] = useState(false);
 
   const {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm<FormData>({
-    defaultValues: provider,
-  });
+    getValues,
+    setValue,
+    watch,
+  } = useForm<FormData>();
 
   const onSubmit = async (form: FormData) => {
     try {
-      setIsSaving(true);
-
       const { data } = await tesloApi({
         url: "/admin/providers",
-        method: provider._id ? "PUT" : "POST",
+        method: form._id ? "PUT" : "POST",
         data: form,
       });
 
       console.log(data);
 
-      if (!provider._id) {
-        router.push("/admin/providers");;
+      if (!form._id) {
+        router.replace(`/admin/providers/${form._id}`);
+      } else {
+        setIsSaving(false);
       }
-
-      setIsSaving(false);
     } catch (error) {
       console.log(error);
       setIsSaving(false);
-      
     }
   };
 
   return (
-    <AdminLayout
-      title={provider._id ? "Editar Proveedor" : "Crear Proveedor"}
-      subTitle={provider._id ? `ID: ${provider._id}` : ""}
+    <AdminLayout 
+      title={'Provider'} 
+      subTitle={`creando: ${provider.name}`}
       icon={<DriveFileRenameOutline />}
     >
       <form onSubmit={handleSubmit(onSubmit)}>
-        <Box display="flex" justifyContent="end" sx={{ mb: 1 }}>
-          <Button
+        <Box display='flex' justifyContent='end' sx={{ mb: 1 }}>
+          <Button 
             color="secondary"
             startIcon={<SaveOutlined />}
-            sx={{ width: "150px" }}
+            sx={{ width: '150px' }}
             type="submit"
             disabled={isSaving}
           >
-            {provider._id ? "Guardar Cambios" : "Crear"}
+            Crear 
           </Button>
         </Box>
-
+  
         <Grid container spacing={2}>
           {/* Data */}
           <Grid item xs={12} sm={6}>
@@ -78,98 +87,100 @@ const ProviderForm = ({ provider }: Props) => {
               variant="filled"
               fullWidth
               sx={{ mb: 1 }}
-              {...register("name", {
-                required: "Este campo es requerido",
-                minLength: { value: 2, message: "Mínimo 2 caracteres" },
+              {...register('name', {
+                required: 'Este campo es requerido',
+                minLength: { value: 2, message: 'Mínimo 2 caracteres' }
               })}
               error={!!errors.name}
               helperText={errors.name?.message}
             />
-
+  
             <TextField
               label="Email"
               variant="filled"
               fullWidth
               multiline
               sx={{ mb: 1 }}
-              {...register("email", {
-                required: "Este campo es requerido",
+              {...register('email', {
+                required: 'Este campo es requerido',
               })}
               error={!!errors.email}
               helperText={errors.email?.message}
             />
-
+  
             <TextField
               label="Contacto"
               variant="filled"
               fullWidth
               sx={{ mb: 1 }}
-              {...register("contact", {
-                required: "Este campo es requerido",
-                min: { value: 0, message: "Mínimo de valor cero" },
+              {...register('contact', {
+                required: 'Este campo es requerido',
+                min: { value: 0, message: 'Mínimo de valor cero' }
               })}
               error={!!errors.contact}
               helperText={errors.contact?.message}
             />
-
+  
             <TextField
               label="Teléfono"
               variant="filled"
               fullWidth
               sx={{ mb: 1 }}
-              {...register("phone", {
-                required: "Este campo es requerido",
+              {...register('phone', {
+                required: 'Este campo es requerido',
               })}
               error={!!errors.phone}
               helperText={errors.phone?.message}
             />
-
+  
             <TextField
               label="Dirección"
               variant="filled"
               fullWidth
               sx={{ mb: 1 }}
-              {...register("address", {
-                required: "Este campo es requerido",
+              {...register('address', {
+                required: 'Este campo es requerido',
               })}
               error={!!errors.address}
               helperText={errors.address?.message}
             />
-
+  
             <TextField
               label="Ciudad"
               variant="filled"
               fullWidth
               sx={{ mb: 1 }}
-              {...register("city", {
-                required: "Este campo es requerido",
+              {...register('city', {
+                required: 'Este campo es requerido',
               })}
               error={!!errors.city}
               helperText={errors.city?.message}
             />
-
+  
             <TextField
               label="País"
               variant="filled"
               fullWidth
               sx={{ mb: 1 }}
-              {...register("country", {
-                required: "Este campo es requerido",
+              {...register('country', {
+                required: 'Este campo es requerido',
               })}
               error={!!errors.country}
               helperText={errors.country?.message}
             />
+  
           </Grid>
+  
         </Grid>
       </form>
     </AdminLayout>
   );
 };
 
-export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-  const { slug } = query;
+export const getServerSideProps: GetServerSideProps = async ({ query, res }) => {
+  const { slug = "" } = query;
 
-  if (!slug || slug === "new") {
+  if (slug === "new") {
     // Create a new provider
     const tempProvider: IProvider = {
       _id: "",
@@ -187,27 +198,25 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
       },
     };
   } else {
-    try {
-      const provider = await Provider.findById(slug).lean();
+    const providers = await Provider.find().lean();
+    const provider = providers.find((p: IProvider) => p._id === slug) || null;
 
-      if (!provider) {
-        return {
-          notFound: true,
-        };
-      }
-
+    if (!provider) {
       return {
-        props: {
-          provider,
+        redirect: {
+          destination: "/admin/providers/new",
+          permanent: false,
         },
       };
-    } catch (error) {
-      console.log(error);
-      return {
-        notFound: true,
-      };
     }
+
+    return {
+      props: {
+        provider,
+      },
+    };
   }
 };
+
 
 export default ProviderForm;
