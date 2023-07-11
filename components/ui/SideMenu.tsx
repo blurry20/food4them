@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
 
 import { Box, Divider, Drawer, IconButton, Input, InputAdornment, List, ListItem, ListItemIcon, ListItemText, ListSubheader } from "@mui/material"
-import { AccountCircleOutlined, AdminPanelSettings, CategoryOutlined, ConfirmationNumberOutlined, EscalatorWarningOutlined, FemaleOutlined, LoginOutlined, MaleOutlined, SearchOutlined, VpnKeyOutlined, DashboardOutlined } from '@mui/icons-material';
+import { AccountCircleOutlined, AdminPanelSettings, CategoryOutlined, ConfirmationNumberOutlined, EscalatorWarningOutlined, FemaleOutlined, LoginOutlined, MaleOutlined, SearchOutlined, VpnKeyOutlined, DashboardOutlined, CoPresent } from '@mui/icons-material';
 
 import { UiContext, AuthContext } from '../../context';
 import { useRouter } from 'next/router';
@@ -183,6 +183,14 @@ export const SideMenu = () => {
                                 </ListItemIcon>
                                 <ListItemText primary={'Ordenes'} />
                             </ListItem>
+                            <ListItem 
+                                button
+                                onClick={ () => navigateTo('/admin/providers') }>
+                                <ListItemIcon>
+                                    <CoPresent/>
+                                </ListItemIcon>
+                                <ListItemText primary={'Proveedores'} />
+                            </ListItem>
 
                             <ListItem 
                                 button
@@ -191,7 +199,8 @@ export const SideMenu = () => {
                                     <AdminPanelSettings/>
                                 </ListItemIcon>
                                 <ListItemText primary={'Usuarios'} />
-                            </ListItem>                        
+                            </ListItem> 
+                            
                         </>
                     )
                 }
