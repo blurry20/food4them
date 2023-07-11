@@ -5,8 +5,8 @@ import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { Grid, Box, Button, Checkbox } from "@mui/material";
 import { AdminLayout } from "../../components/layouts";
 import { IProvider } from "../../interfaces";
-import { Provider } from "../../models";
 import axios from "axios";
+
 
 const ProvidersPage = () => {
   const { data, error } = useSWR<{ providers: IProvider[] }>(
