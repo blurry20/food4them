@@ -13,7 +13,15 @@ export default async function handler(
     await sendEmail({
       to: req.body.to,
       subject: req.body.subject,
-      html: render(WelcomeTemplate()),
+      html: 
+      `    <div>
+      <h1>Hello ${req.body.name},</h1>
+      <p>Your order details:</p>
+      <p>Order ID: ${req.body.orderId}</p>
+      <p>Shipping Address: ${req.body.address}, ${req.body.city}, ${req.body.country}</p>
+      <p>Phone: ${req.body.phone}</p>
+      <p>Producto: ${req.body.order}</p>
+    </div>`
     });
   }
   
