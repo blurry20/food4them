@@ -7,6 +7,7 @@ import { Types } from 'mongoose';
 type Data = {
   providers?: IProvider[];
   error?: string;
+  message?: string;
 };
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
@@ -44,20 +45,20 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
         return res.status(404).json({ error: 'Provider not found' });
       }
     } else if (req.method === 'DELETE') {
-      // Delete an existing provider
-      const providerId = req.query.id; // Assuming the provider ID is passed as a query parameter
+      // Delete multiple existing providers
+      const { selectedRows } = req.body; // Assuming selectedRows is an array of provider IDs
 
-      if (typeof providerId !== 'string' || !Types.ObjectId.isValid(providerId)) {
-        return res.status(400).json({ error: 'Invalid provider ID' });
+      if (!Array.isArray(selectedRows)) {
+        return res.status(400).json({ error: 'Invalid request' });
       }
 
-      const deletedProvider = await Provider.findByIdAndDelete(providerId).lean() as IProvider;
+      const deleteResult = await Provider.deleteMany({ _id: { $in: selectedRows } });
       await db.disconnect();
 
-      if (deletedProvider) {
-        return res.status(200).json({ providers: [deletedProvider] });
+      if (deleteResult.deletedCount > 0) {
+        return res.status(200).json({ message: 'Providers deleted successfully' });
       } else {
-        return res.status(404).json({ error: 'Provider not found' });
+        return res.status(404).json({ error: 'Providers not found' });
       }
     } else {
       return res.status(405).json({ error: 'Method Not Allowed' });
@@ -67,18 +68,18 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse<
     return res.status(500).json({ error: 'Internal Server Error' });
   }
 }
+
 const createProvider = async (providerData: IProvider): Promise<IProvider> => {
   try {
     // Exclude the _id field from the providerData
     const { _id, ...dataWithoutId } = providerData;
-    
+
     const provider = new Provider(dataWithoutId); // Create a new instance of the Provider model
     await provider.save(); // Save the provider to the database
-    
+
     return provider;
   } catch (error) {
     console.error(error); // Log the error
     throw new Error('Error creating provider');
   }
-}
-
+};
