@@ -1,4 +1,4 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
 import { GetServerSideProps, NextPage } from 'next';
 import { getSession } from 'next-auth/react';
 import { useRouter } from 'next/router';
@@ -12,10 +12,7 @@ import { CartList, OrderSummary } from '../../components/cart';
 import { dbOrders } from '../../database';
 import { IOrder } from '../../interfaces';
 import { tesloApi } from '../../api';
-import axios from 'axios';
-import { AuthContext } from '../../context/auth/AuthContext';
-//import { jsPDF } from 'jspdf';
-//import 'jspdf-autotable';
+
 
 export type OrderResponseBody = {
     id: string;
@@ -34,9 +31,7 @@ interface Props {
 
 const OrderPage: NextPage<Props> = ({ order }) => {
 
-    const { user } = useContext(AuthContext);
-    const { email } = user || {};
-    
+
     const router = useRouter();
     const { shippingAddress } = order;
     const [isPaying, setIsPaying] = useState(false);
@@ -57,53 +52,8 @@ const OrderPage: NextPage<Props> = ({ order }) => {
                 orderId: order._id
             });
 
-            const productRows = order.orderItems.map((product) => {
-                const { title, quantity } = product;
-                return `<tr>
-                            <td>${title}</td>
-                            <td>${quantity}</td>
-                        </tr>`;
-            });
-        
-            const tableContent = `<table style="width: 100%; border-collapse: collapse;">
-                <thead>
-                    <tr>
-                        <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Productos</th>
-                        <th style="border: 1px solid #ddd; padding: 8px; text-align: left;">Cantidad</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    ${productRows.join('')}
-                </tbody>
-                </table>`;
-                
-                axios({
-                    method: 'post',
-                    url: '/api/send-email',
-                    data: {
-                      to: email,
-                      subject: `Su orden ${order._id} ha sido pagada`,
-                      name: shippingAddress.firstName,
-                      name2: shippingAddress.lastName,
-                      orderId: order._id,
-                      address: shippingAddress.address,
-                      address2: shippingAddress.address2,
-                      city: shippingAddress.city,
-                      country: shippingAddress.country,
-                      phone: shippingAddress.phone,
-                      zip: shippingAddress.zip,
-                      order: tableContent,
-                    },
-                  })
-                    .then(() => {
-                      router.reload();
-                    })
-                    .catch((error) => {
-                      setIsPaying(false);
-                      console.log(error);
-                    });
-                
-                        
+            router.reload();
+
         } catch (error) {
             setIsPaying(false);
             console.log(error);

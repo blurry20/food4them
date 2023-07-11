@@ -4,11 +4,11 @@
 export const format = ( value: number ) => {
 
     // Crear formateador
-    const formatter = new Intl.NumberFormat('en-CL', {
+    const formatter = new Intl.NumberFormat('en-US', {
         style: 'currency',
-        currency: 'CLP',
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 0,
+        currency: 'USD',
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
     })
 
     return formatter.format( value ); //$2,500.00

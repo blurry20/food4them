@@ -46,7 +46,7 @@ export const CartList: FC<Props> = ({ editable = false, products }) => {
                         <Grid item xs={7}>
                             <Box display='flex' flexDirection='column'>
                                 <Typography variant='body1'>{ product.title }</Typography>
-                                <Typography variant='body1'>Tamaño: <strong>{ product.size }</strong></Typography>
+                                <Typography variant='body1'>Talla: <strong>{ product.size }</strong></Typography>
 
                                 {
                                     editable 
