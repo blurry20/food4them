@@ -4,7 +4,6 @@ import { Provider } from '../../../models';
 import { IProvider } from '../../../interfaces/provider';
 import { Types } from 'mongoose';
 
-
 type Data = {
   providers?: IProvider[];
   error?: string;
@@ -84,3 +83,4 @@ const createProvider = async (providerData: IProvider): Promise<IProvider> => {
     throw new Error('Error creating provider');
   }
 };
+//

@@ -1,211 +1,130 @@
 import { useContext, useState } from 'react';
-
-import { Box, Divider, Drawer, IconButton, Input, InputAdornment, List, ListItem, ListItemIcon, ListItemText, ListSubheader } from "@mui/material"
-import { AccountCircleOutlined, AdminPanelSettings, CategoryOutlined, ConfirmationNumberOutlined, EscalatorWarningOutlined, FemaleOutlined, LoginOutlined, MaleOutlined, SearchOutlined, VpnKeyOutlined, DashboardOutlined, CoPresent } from '@mui/icons-material';
-
-import { UiContext, AuthContext } from '../../context';
+import NextLink from 'next/link';
 import { useRouter } from 'next/router';
 
+import { AppBar, Badge, Box, Button, IconButton, Input, InputAdornment, Link, Toolbar, Typography } from '@mui/material';
+import { ClearOutlined, SearchOutlined, ShoppingCartOutlined } from '@mui/icons-material';
 
-export const SideMenu = () => {
+import { CartContext, UiContext } from '../../context';
 
-    const router = useRouter();
-    const { isMenuOpen, toggleSideMenu } = useContext( UiContext );
-    const { user, isLoggedIn, logout } = useContext(  AuthContext );
+export const Navbar = () => {
+
+    const { asPath, push } = useRouter();
+    const { toggleSideMenu } = useContext( UiContext );
+    const { numberOfItems } = useContext( CartContext );
 
     const [searchTerm, setSearchTerm] = useState('');
+    const [isSearchVisible, setIsSearchVisible] = useState(false);
 
     const onSearchTerm = () => {
         if( searchTerm.trim().length === 0 ) return;
-        navigateTo(`/search/${ searchTerm }`);
+        push(`/search/${ searchTerm }`);
     }
 
     
-    const navigateTo = ( url: string ) => {
-        toggleSideMenu();
-        router.push(url);
-    }
+
+    return (
+        <AppBar>
+            <Toolbar>
+                <NextLink href='/' passHref>
+                    <Link display='flex' alignItems='center'>
+                        <Typography variant='h6'>FOOD4THEM |</Typography>
+                        <Typography sx={{ ml: 0.5 }}>Shop</Typography>
+                    </Link>  
+                </NextLink>
+
+                <Box flex={ 1 } />
+
+                <Box sx={{ display: isSearchVisible ? 'none' : { xs: 'none', sm: 'block' } }}
+                    className="fadeIn">
+                    <NextLink href='/category/dog' passHref>
+                        <Link>
+                            <Button color={ asPath === '/category/dog' ? 'primary':'info'}>Perros</Button>
+                        </Link>
+                    </NextLink>
+                    <NextLink href='/category/cat' passHref>
+                        <Link>
+                            <Button color={ asPath === '/category/cat' ? 'primary':'info'}>Gatos</Button>
+                        </Link>
+                    </NextLink>
+                    <NextLink href='/category/birds' passHref>
+                        <Link>
+                            <Button color={ asPath === '/category/birds' ? 'primary':'info'}>Aves</Button>
+                        </Link>
+                    </NextLink>
+                    <NextLink href='/category/exotics' passHref>
+                        <Link>
+                            <Button color={ asPath === '/category/exotics' ? 'primary':'info'}>Exoticos</Button>
+                        </Link>
+                    </NextLink>
+                </Box>
 
 
-  return (
-    <Drawer
-        open={ isMenuOpen }
-        anchor='right'
-        sx={{ backdropFilter: 'blur(4px)', transition: 'all 0.5s ease-out' }}
-        onClose={ toggleSideMenu }
-    >
-        <Box sx={{ width: 250, paddingTop: 5 }}>
-            
-            <List>
+                <Box flex={ 1 } />
+                
+                
 
-                <ListItem>
-                    <Input
-                        autoFocus
-                        value={ searchTerm }
-                        onChange={ (e) => setSearchTerm( e.target.value ) }
-                        onKeyPress={ (e) => e.key === 'Enter' ? onSearchTerm() : null }
-                        type='text'
-                        placeholder="Buscar..."
-                        endAdornment={
-                            <InputAdornment position="end">
-                                <IconButton
-                                    onClick={ onSearchTerm }
-                                >
-                                 <SearchOutlined />
-                                </IconButton>
-                            </InputAdornment>
-                        }
-                    />
-                </ListItem>
-
+                {/* Pantallas pantallas grandes */}
                 {
-                    isLoggedIn && (
-                        <>
-                            <ListItem button>
-                                <ListItemIcon>
-                                    <AccountCircleOutlined/>
-                                </ListItemIcon>
-                                <ListItemText primary={'Perfil'} />
-                            </ListItem>
-
-                            <ListItem 
-                                button 
-                                onClick={() => navigateTo('/orders/history') }
-                            >
-                                <ListItemIcon>
-                                    <ConfirmationNumberOutlined/>
-                                </ListItemIcon>
-                                <ListItemText primary={'Mis Ordenes'} />
-                            </ListItem>
-                        </>
-                    )
-                }
-
-
-                <ListItem 
-                    button 
-                    sx={{ display: { xs: '', sm: 'none' } }} 
-                    onClick={ () => navigateTo('/category/dog') }
-                >
-                    <ListItemIcon>
-                        <MaleOutlined/>
-                    </ListItemIcon>
-                    <ListItemText primary={'Perros'} />
-                </ListItem>
-
-                <ListItem 
-                    button 
-                    sx={{ display: { xs: '', sm: 'none' } }}
-                    onClick={ () => navigateTo('/category/cat') }
-                >
-                    <ListItemIcon>
-                        <FemaleOutlined/>
-                    </ListItemIcon>
-                    <ListItemText primary={'Gatos'} />
-                </ListItem>
-
-                <ListItem 
-                    button 
-                    sx={{ display: { xs: '', sm: 'none' } }}
-                    onClick={ () => navigateTo('/category/birds') }
-                >
-                    <ListItemIcon>
-                        <EscalatorWarningOutlined/>
-                    </ListItemIcon>
-                    <ListItemText primary={'Aves'} />
-                </ListItem>
-
-                <ListItem 
-                    button 
-                    sx={{ display: { xs: '', sm: 'none' } }}
-                    onClick={ () => navigateTo('/category/exotics') }
-                >
-                    <ListItemIcon>
-                        <EscalatorWarningOutlined/>
-                    </ListItemIcon>
-                    <ListItemText primary={'Exoticos'} />
-                </ListItem>
-
-
-                {
-                    isLoggedIn 
-                    ? (
-                        <ListItem button onClick={ logout }>
-                            <ListItemIcon>
-                                <LoginOutlined/>
-                            </ListItemIcon>
-                            <ListItemText primary={'Salir'} />
-                        </ListItem>
-                    )
-                    : (
-                        <ListItem 
-                            button
-                            onClick={ () => navigateTo(`/auth/login?p=${ router.asPath }`) }
+                    isSearchVisible 
+                        ? (
+                            <Input
+                                sx={{ display: { xs: 'none', sm: 'flex' } }}
+                                className='fadeIn'
+                                autoFocus
+                                value={ searchTerm }
+                                onChange={ (e) => setSearchTerm( e.target.value ) }
+                                onKeyPress={ (e) => e.key === 'Enter' ? onSearchTerm() : null }
+                                type='text'
+                                placeholder="Buscar..."
+                                endAdornment={
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            onClick={ () => setIsSearchVisible(false) }
+                                        >
+                                            <ClearOutlined />
+                                        </IconButton>
+                                    </InputAdornment>
+                                }
+                            />
+                        )
+                    : 
+                    (
+                        <IconButton 
+                            onClick={ () => setIsSearchVisible(true) }
+                            className="fadeIn"
+                            sx={{ display: { xs: 'none', sm: 'flex' } }}
                         >
-                            <ListItemIcon>
-                                <VpnKeyOutlined/>
-                            </ListItemIcon>
-                            <ListItemText primary={'Ingresar'} />
-                        </ListItem>
+                            <SearchOutlined />
+                        </IconButton>
                     )
                 }
 
 
+                {/* Pantallas pequeñas */}
+                <IconButton
+                    sx={{ display: { xs: 'flex', sm: 'none' } }}
+                    onClick={ toggleSideMenu }
+                >
+                    <SearchOutlined />
+                </IconButton>
 
-                {/* Admin */}
-                {
-                    user?.role === 'admin' && (
-                        <>
-                            <Divider />
-                            <ListSubheader>Admin Panel</ListSubheader>
+                <NextLink href="/cart" passHref>
+                    <Link>
+                        <IconButton>
+                            <Badge badgeContent={ numberOfItems > 9 ? '+9': numberOfItems  } color="secondary">
+                                <ShoppingCartOutlined />
+                            </Badge>
+                        </IconButton>
+                    </Link>
+                </NextLink>
 
-                            <ListItem 
-                                button
-                                onClick={ () => navigateTo('/admin/') }>
-                                <ListItemIcon>
-                                    <DashboardOutlined />
-                                </ListItemIcon>
-                                <ListItemText primary={'Dashboard'} />
-                            </ListItem>
 
-                            <ListItem button
-                                      onClick={ () => navigateTo('/admin/products') }>
-                                <ListItemIcon>
-                                    <CategoryOutlined/>
-                                </ListItemIcon>
-                                <ListItemText primary={'Productos'} />
-                            </ListItem>
-                            <ListItem 
-                                button
-                                onClick={ () => navigateTo('/admin/orders') }>
-                                <ListItemIcon>
-                                    <ConfirmationNumberOutlined/>
-                                </ListItemIcon>
-                                <ListItemText primary={'Ordenes'} />
-                            </ListItem>
-                            <ListItem 
-                                button
-                                onClick={ () => navigateTo('/admin/providers') }>
-                                <ListItemIcon>
-                                    <CoPresent/>
-                                </ListItemIcon>
-                                <ListItemText primary={'Proveedores'} />
-                            </ListItem>
+                <Button onClick={ toggleSideMenu }>
+                    Menú
+                </Button>
 
-                            <ListItem 
-                                button
-                                onClick={ () => navigateTo('/admin/users') }>
-                                <ListItemIcon>
-                                    <AdminPanelSettings/>
-                                </ListItemIcon>
-                                <ListItemText primary={'Usuarios'} />
-                            </ListItem> 
-                            
-                        </>
-                    )
-                }
-            </List>
-        </Box>
-    </Drawer>
-  )
+            </Toolbar>
+        </AppBar>
+    )
 }
