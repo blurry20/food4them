@@ -1,104 +1,85 @@
-import { AddOutlined, PeopleOutline, DeleteOutline } from '@mui/icons-material';
-import useSWR from 'swr';
-import { useState, useEffect } from 'react';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { Grid, Box, Button, Checkbox } from '@mui/material';
-import { AdminLayout } from '../../components/layouts';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { Types } from 'mongoose';
 import { IProvider } from '../../interfaces';
+import { db } from '../../database';
 import { Provider } from '../../models';
-import axios from 'axios';
 
-const ProvidersPage = () => {
-  const { data, error } = useSWR<{ providers: IProvider[] }>('/api/admin/providers');
-  const [providers, setProviders] = useState<IProvider[]>([]);
-  const [selectedRows, setSelectedRows] = useState<string[]>([]);
-
-  useEffect(() => {
-    if (data) {
-      setProviders(data.providers);
-    }
-  }, [data]);
-
-  if (error) return <div>Error loading providers</div>;
-
-  const columns: GridColDef[] = [
-    {
-      field: 'selection',
-      headerName: '',
-      width: 70,
-      sortable: false,
-      renderCell: (params) => (
-        <Checkbox
-          color="primary"
-          checked={selectedRows.includes(params.row._id)}
-          onChange={() => handleRowSelection(params.row._id)}
-        />
-      ),
-    },
-    { field: 'name', headerName: 'Nombre de Empresa', width: 250 },
-    { field: 'contact', headerName: 'Nombre de Contacto', width: 300 },
-    { field: 'email', headerName: 'Correo', width: 250 },
-    { field: 'phone', headerName: 'Telefono', width: 300 },
-    { field: 'address', headerName: 'Direccion', width: 300 },
-    { field: 'city', headerName: 'Ciudad', width: 300 },
-    { field: 'state', headerName: 'País', width: 300 },
-  ];
-
-  const rows = providers.map((provider: IProvider, index: number) => ({
-    id: index + 1, // Assign a unique id to each row
-    ...provider,
-  }));
-
-  const handleRowSelection = (providerId?: string) => {
-    if (providerId) {
-      if (selectedRows.includes(providerId)) {
-        setSelectedRows(selectedRows.filter((id) => id !== providerId));
-      } else {
-        setSelectedRows([...selectedRows, providerId]);
-      }
-    }
-  };
-
-  const handleDelete = async () => {
-    try {
-      await axios.delete('/api/admin/providers', {
-        data: { selectedRows },
-      });
-      const remainingProviders = providers.filter((provider) => !selectedRows.includes(provider._id));
-      setProviders(remainingProviders);
-      setSelectedRows([]);
-    } catch (error) {
-      console.error('Error deleting providers', error);
-    }
-  };
-
-  return (
-    <AdminLayout title={'Proveedores'} subTitle={'Mantenimiento de proveedores'} icon={<PeopleOutline />}>
-      <Box display="flex" justifyContent="end" sx={{ mb: 2 }}>
-        <Button startIcon={<AddOutlined />} color="secondary" href="/admin/providers/new">
-          Crear proveedor
-        </Button>
-        <Button
-          startIcon={<DeleteOutline />}
-          color="error"
-          onClick={handleDelete}
-          disabled={selectedRows.length === 0}
-        >
-          Eliminar
-        </Button>
-      </Box>
-      <Grid container className="fadeIn">
-        <Grid item xs={12} sx={{ height: 650, width: '100%' }}>
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            pageSize={10}
-            rowsPerPageOptions={[10]}
-          />
-        </Grid>
-      </Grid>
-    </AdminLayout>
-  );
+type Data = {
+  providers?: IProvider[];
+  error?: string;
+  message?: string;
 };
 
-export default ProvidersPage;
+export default async function handler(req: NextApiRequest, res: NextApiResponse<Data>) {
+  try {
+    await db.connect();
+
+    if (req.method === 'GET') {
+      // Retrieve all providers
+      const providers = await Provider.find().lean() as IProvider[];
+      await db.disconnect();
+
+      return res.status(200).json({ providers });
+    } else if (req.method === 'POST') {
+      // Create a new provider
+      const newProvider = req.body; // Assuming the request body contains the new provider data
+      const provider = await createProvider(newProvider);
+      await db.disconnect();
+
+      return res.status(201).json({ providers: [provider] });
+    } else if (req.method === 'PUT') {
+      // Update an existing provider
+      const providerId = req.query.id; // Assuming the provider ID is passed as a query parameter
+
+      if (typeof providerId !== 'string' || !Types.ObjectId.isValid(providerId)) {
+        return res.status(400).json({ error: 'Invalid provider ID' });
+      }
+
+      const updatedProvider = req.body; // Assuming the request body contains the updated provider data
+      const provider = await Provider.findByIdAndUpdate(providerId, updatedProvider, { new: true }).lean() as IProvider;
+      await db.disconnect();
+
+      if (provider) {
+        return res.status(200).json({ providers: [provider] });
+      } else {
+        return res.status(404).json({ error: 'Provider not found' });
+      }
+    } else if (req.method === 'DELETE') {
+      // Delete multiple existing providers
+      const { selectedRows } = req.body; // Assuming selectedRows is an array of provider IDs
+
+      if (!Array.isArray(selectedRows)) {
+        return res.status(400).json({ error: 'Invalid request' });
+      }
+
+      const deleteResult = await Provider.deleteMany({ _id: { $in: selectedRows } });
+      await db.disconnect();
+
+      if (deleteResult.deletedCount > 0) {
+        return res.status(200).json({ message: 'Providers deleted successfully' });
+      } else {
+        return res.status(404).json({ error: 'Providers not found' });
+      }
+    } else {
+      return res.status(405).json({ error: 'Method Not Allowed' });
+    }
+  } catch (error) {
+    console.error(error); // Log the error
+    return res.status(500).json({ error: 'Internal Server Error' });
+  }
+}
+
+const createProvider = async (providerData: IProvider): Promise<IProvider> => {
+  try {
+    // Exclude the _id field from the providerData
+    const { _id, ...dataWithoutId } = providerData;
+
+    const provider = new Provider(dataWithoutId); // Create a new instance of the Provider model
+    await provider.save(); // Save the provider to the database
+
+    return provider;
+  } catch (error) {
+    console.error(error); // Log the error
+    throw new Error('Error creating provider');
+  }
+};
