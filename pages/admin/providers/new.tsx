@@ -40,7 +40,7 @@ const ProviderForm = ({ provider }: Props) => {
       console.log(data);
 
       if (!provider._id) {
-        router.replace(`/admin/providers/${data._id}`);
+        router.push("/admin/providers");;
       }
 
       setIsSaving(false);
@@ -167,9 +167,9 @@ const ProviderForm = ({ provider }: Props) => {
 };
 
 export const getServerSideProps: GetServerSideProps = async ({ query }) => {
-  const { slug = "" } = query;
+  const { slug } = query;
 
-  if (slug === "new") {
+  if (!slug || slug === "new") {
     // Create a new provider
     const tempProvider: IProvider = {
       _id: "",
@@ -187,22 +187,26 @@ export const getServerSideProps: GetServerSideProps = async ({ query }) => {
       },
     };
   } else {
-    const provider = await Provider.findById(slug).lean();
+    try {
+      const provider = await Provider.findById(slug).lean();
 
-    if (!provider) {
+      if (!provider) {
+        return {
+          notFound: true,
+        };
+      }
+
       return {
-        redirect: {
-          destination: "/admin/providers/new",
-          permanent: false,
+        props: {
+          provider,
         },
       };
+    } catch (error) {
+      console.log(error);
+      return {
+        notFound: true,
+      };
     }
-
-    return {
-      props: {
-        provider,
-      },
-    };
   }
 };
 

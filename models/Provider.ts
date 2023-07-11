@@ -1,8 +1,8 @@
 import mongoose, { Schema, model, Model } from 'mongoose';
 import { IProvider } from '../interfaces/provider';
 
-const providerSchema = new Schema<IProvider>({
-  _id: { type: mongoose.Schema.Types.ObjectId, auto: true },
+const providerSchema = new Schema({
+  
   name: { type: String, required: true },
   contact: { type: String, required: true },
   email: { type: String },
