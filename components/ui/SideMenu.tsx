@@ -1,7 +1,7 @@
 import { useContext, useState } from 'react';
 
 import { Box, Divider, Drawer, IconButton, Input, InputAdornment, List, ListItem, ListItemIcon, ListItemText, ListSubheader } from "@mui/material"
-import { AccountCircleOutlined, AdminPanelSettings, CategoryOutlined, CoPresent, ConfirmationNumberOutlined, EscalatorWarningOutlined, FemaleOutlined, LoginOutlined, MaleOutlined, SearchOutlined, VpnKeyOutlined, DashboardOutlined ,AirportShuttle} from '@mui/icons-material';
+import { AccountCircleOutlined, AdminPanelSettings, CategoryOutlined, ConfirmationNumberOutlined, EscalatorWarningOutlined, FemaleOutlined, LoginOutlined, MaleOutlined, SearchOutlined, VpnKeyOutlined, DashboardOutlined, CoPresent } from '@mui/icons-material';
 
 import { UiContext, AuthContext } from '../../context';
 import { useRouter } from 'next/router';
@@ -175,7 +175,6 @@ export const SideMenu = () => {
                                 </ListItemIcon>
                                 <ListItemText primary={'Productos'} />
                             </ListItem>
-
                             <ListItem 
                                 button
                                 onClick={ () => navigateTo('/admin/orders') }>
@@ -184,16 +183,6 @@ export const SideMenu = () => {
                                 </ListItemIcon>
                                 <ListItemText primary={'Ordenes'} />
                             </ListItem>
-
-                            <ListItem 
-                                button
-                                onClick={ () => navigateTo('/admin/shipments') }>
-                                <ListItemIcon>
-                                    <AirportShuttle/>
-                                </ListItemIcon>
-                                <ListItemText primary={'Despachos'} />
-                            </ListItem>
-
                             <ListItem 
                                 button
                                 onClick={ () => navigateTo('/admin/providers') }>
@@ -210,7 +199,8 @@ export const SideMenu = () => {
                                     <AdminPanelSettings/>
                                 </ListItemIcon>
                                 <ListItemText primary={'Usuarios'} />
-                            </ListItem>                        
+                            </ListItem> 
+                            
                         </>
                     )
                 }
