@@ -8,10 +8,6 @@ export default NextAuth({
   // Configure one or more authentication providers
   providers: [
 
-    GoogleProvider({
-      clientId: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET
-    }),
     // ...add more providers here
 
     Credentials({
@@ -33,6 +29,11 @@ export default NextAuth({
   GithubProvider({
       clientId: process.env.GITHUB_ID,
       clientSecret: process.env.GITHUB_SECRET,
+    }),
+
+    GoogleProvider({
+      clientId: process.env.GOOGLE_CLIENT_ID,
+      clientSecret: process.env.GOOGLE_CLIENT_SECRET
     }),
 
   ],
