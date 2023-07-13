@@ -15,12 +15,12 @@ export default async function handler(
       subject: req.body.subject,
       html: 
       `    <div>
-      <h1>Hello ${req.body.name},</h1>
-      <p>Your order details:</p>
-      <p>Order ID: ${req.body.orderId}</p>
-      <p>Shipping Address: ${req.body.address}, ${req.body.city}, ${req.body.country}</p>
-      <p>Phone: ${req.body.phone}</p>
-      <p>Producto: ${req.body.order}</p>
+      <h1>Hola ${req.body.name},</h1>
+      <p>Los detalles de tu orden:</p>
+      <p>ID de Orden: ${req.body.orderId}</p>
+      <p>Dirección: ${req.body.address}, ${req.body.city}, ${req.body.country}</p>
+      <p>Fono: ${req.body.phone}</p>
+      <p>${req.body.order}</p>
     </div>`
     });
   }

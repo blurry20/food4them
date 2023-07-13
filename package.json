@@ -1,5 +1,5 @@
 {
-  "name": "teslo-shop",
+  "name": "food4them",
   "private": true,
   "scripts": {
     "dev": "next dev",

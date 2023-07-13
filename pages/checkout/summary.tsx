@@ -47,17 +47,17 @@ const SummaryPage = () => {
                     </tr>`;
         });
     
-        const tableContent = `<table>
-                            <thead>
-                                <tr>
-                                    <th>Productos</th>
-                                    <th>Cantidad</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                ${productRows.join('')}
-                            </tbody>
-                        </table>`;
+        const tableContent = `<table style="width: 100%; border-collapse: collapse;">
+        <thead>
+            <tr>
+                <th style="border: 1px solid #ddd; padding: 8px; text-align: center;">Productos</th>
+                <th style="border: 1px solid #ddd; padding: 8px; text-align: center;">Cantidad</th>
+            </tr>
+        </thead>
+        <tbody>
+            ${productRows.join('')}
+        </tbody>
+        </table>`;
 
 
         //const productInfo = cart.map((item, index) => {

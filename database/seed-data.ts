@@ -170,7 +170,7 @@ export const initialData: SeedData = {
             'ferret.jpeg',
             'zoomed-6.png',
         ],
-        inStock: 3,
+        inStock: 0,
         price: 11000,
         sizes: ['5kg','10kg','15kg','20kg','25kg','30kg','35kg','40kg','45kg','50kg'],
         slug: "ferret666",

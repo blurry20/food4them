@@ -40,14 +40,14 @@ const ProviderForm = ({ provider }: Props) => {
       console.log(data);
 
       if (!provider._id) {
-        router.push("/admin/providers");;
+        router.push("/admin/providers");
+        window.alert("Proveedor creado exitosamente");
       }
 
       setIsSaving(false);
     } catch (error) {
       console.log(error);
       setIsSaving(false);
-      
     }
   };
 
