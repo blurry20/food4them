@@ -9,9 +9,7 @@ import { CartContext } from '../../context';
 import { ShopLayout } from '../../components/layouts/ShopLayout';
 import { CartList, OrderSummary } from '../../components/cart';
 import { IUser } from '../../interfaces';
-import { tesloApi } from '../../api';
 import axios from 'axios';
-import jsPDF from 'jspdf';
 
 const SummaryPage = () => {
     const { user } = useContext(AuthContext);
