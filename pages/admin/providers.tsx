@@ -1,18 +1,20 @@
-import useSWR from 'swr';
-import { useState, useEffect } from 'react';
-import { DataGrid, GridColDef } from '@mui/x-data-grid';
-import { Grid, Box, Button, Checkbox } from '@mui/material';
-import { AdminLayout } from '../../components/layouts';
-import { IProvider } from '../../interfaces';
-import { Provider } from '../../models';
-import axios from 'axios';
-import { AddOutlined, DeleteOutline, PeopleOutline } from '@mui/icons-material';
+import useSWR from "swr";
+import { useState, useEffect } from "react";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { Grid, Box, Button, Checkbox } from "@mui/material";
+import { AdminLayout } from "../../components/layouts";
+import { IProvider } from "../../interfaces";
+import { Provider } from "../../models";
+import axios from "axios";
+import { AddOutlined, ContactMail, DeleteOutline, PeopleOutline } from "@mui/icons-material";
 
 const ProvidersPage = () => {
-  const { data, error } = useSWR<{ providers: IProvider[] }>('/api/admin/providers');
+  const { data, error } = useSWR<{ providers: IProvider[] }>(
+    "/api/admin/providers"
+  );
   const [providers, setProviders] = useState<IProvider[]>([]);
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
-  const [deleteMessage, setDeleteMessage] = useState<string>('');
+  const [deleteMessage, setDeleteMessage] = useState<string>("");
 
   useEffect(() => {
     if (data) {
@@ -24,8 +26,8 @@ const ProvidersPage = () => {
 
   const columns: GridColDef[] = [
     {
-      field: 'selection',
-      headerName: '',
+      field: "selection",
+      headerName: "",
       width: 70,
       sortable: false,
       renderCell: (params) => (
@@ -36,13 +38,13 @@ const ProvidersPage = () => {
         />
       ),
     },
-    { field: 'name', headerName: 'Nombre de Empresa', width: 250 },
-    { field: 'contact', headerName: 'Nombre de Contacto', width: 300 },
-    { field: 'email', headerName: 'Correo', width: 250 },
-    { field: 'phone', headerName: 'Telefono', width: 300 },
-    { field: 'address', headerName: 'Direccion', width: 300 },
-    { field: 'city', headerName: 'Ciudad', width: 300 },
-    { field: 'state', headerName: 'País', width: 300 },
+    { field: "name", headerName: "Nombre de Empresa", width: 250 },
+    { field: "contact", headerName: "Nombre de Contacto", width: 300 },
+    { field: "email", headerName: "Correo", width: 250 },
+    { field: "phone", headerName: "Telefono", width: 300 },
+    { field: "address", headerName: "Direccion", width: 300 },
+    { field: "city", headerName: "Ciudad", width: 300 },
+    { field: "state", headerName: "País", width: 300 },
   ];
 
   const rows = providers.map((provider: IProvider, index: number) => ({
@@ -62,27 +64,36 @@ const ProvidersPage = () => {
 
   const handleDelete = async () => {
     try {
-      await axios.delete('/api/admin/providers', {
+      await axios.delete("/api/admin/providers", {
         data: { selectedRows },
       });
-      const remainingProviders = providers.filter((provider) => !selectedRows.includes(provider._id));
+      const remainingProviders = providers.filter(
+        (provider) => !selectedRows.includes(provider._id)
+      );
       setProviders(remainingProviders);
       setSelectedRows([]);
-      setDeleteMessage('Proveedor eliminado exitosamente');
+      setDeleteMessage("Proveedor eliminado exitosamente");
       //Delete message disappears after 3 seconds
       setTimeout(() => {
-        setDeleteMessage('');
+        setDeleteMessage("");
       }, 3000);
-      
     } catch (error) {
-      console.error('Error deleting providers', error);
+      console.error("Error deleting providers", error);
     }
   };
 
   return (
-    <AdminLayout title={'Proveedores'} subTitle={'Mantenimiento de proveedores'} icon={<PeopleOutline />}>
+    <AdminLayout
+      title={"Proveedores"}
+      subTitle={"Mantenimiento de proveedores"}
+      icon={<PeopleOutline />}
+    >
       <Box display="flex" justifyContent="end" sx={{ mb: 2 }}>
-        <Button startIcon={<AddOutlined />} color="secondary" href="/admin/providers/new">
+        <Button
+          startIcon={<AddOutlined />}
+          color="secondary"
+          href="/admin/providers/new"
+        >
           Crear proveedor
         </Button>
         <Button
@@ -93,14 +104,17 @@ const ProvidersPage = () => {
         >
           Eliminar
         </Button>
+        <Button startIcon={<ContactMail />} color="primary" href="/admin/providers/contact">
+            Contactar
+          </Button>
       </Box>
       {deleteMessage && (
         <Box sx={{ mb: 2 }}>
-          <span style={{ color: 'green' }}>{deleteMessage}</span>
+          <span style={{ color: "green" }}>{deleteMessage}</span>
         </Box>
       )}
       <Grid container className="fadeIn">
-        <Grid item xs={12} sx={{ height: 650, width: '100%' }}>
+        <Grid item xs={12} sx={{ height: 650, width: "100%" }}>
           <DataGrid
             rows={rows}
             columns={columns}
