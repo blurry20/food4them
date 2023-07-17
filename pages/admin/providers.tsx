@@ -1,4 +1,3 @@
-import useSWR from "swr";
 import { useState, useEffect } from "react";
 import { DataGrid, GridColDef } from "@mui/x-data-grid";
 import { Grid, Box, Button, Checkbox } from "@mui/material";
@@ -7,22 +6,26 @@ import { IProvider } from "../../interfaces";
 import { Provider } from "../../models";
 import axios from "axios";
 import { AddOutlined, ContactMail, DeleteOutline, PeopleOutline } from "@mui/icons-material";
+import { useRouter } from "next/router";
 
 const ProvidersPage = () => {
-  const { data, error } = useSWR<{ providers: IProvider[] }>(
-    "/api/admin/providers"
-  );
+  const router = useRouter();
   const [providers, setProviders] = useState<IProvider[]>([]);
   const [selectedRows, setSelectedRows] = useState<string[]>([]);
   const [deleteMessage, setDeleteMessage] = useState<string>("");
 
   useEffect(() => {
-    if (data) {
-      setProviders(data.providers);
-    }
-  }, [data]);
+    const fetchProviders = async () => {
+      try {
+        const response = await axios.get("/api/admin/providers");
+        setProviders(response.data.providers);
+      } catch (error) {
+        console.error("Error loading providers", error);
+      }
+    };
 
-  if (error) return <div>Error loading providers</div>;
+    fetchProviders();
+  }, []);
 
   const columns: GridColDef[] = [
     {
@@ -48,7 +51,7 @@ const ProvidersPage = () => {
   ];
 
   const rows = providers.map((provider: IProvider, index: number) => ({
-    id: index + 1, // Assign a unique id to each row
+    id: index + 1,
     ...provider,
   }));
 
@@ -73,12 +76,27 @@ const ProvidersPage = () => {
       setProviders(remainingProviders);
       setSelectedRows([]);
       setDeleteMessage("Proveedor eliminado exitosamente");
-      //Delete message disappears after 3 seconds
       setTimeout(() => {
         setDeleteMessage("");
       }, 3000);
     } catch (error) {
       console.error("Error deleting providers", error);
+    }
+  };
+
+  const handleContact = () => {
+    const selectedProvider = providers.find(
+      (provider) => provider._id === selectedRows[0]
+    );
+
+    if (selectedProvider) {
+      router.push({
+        pathname: '/admin/providers/contact',
+        query: {
+          defaultName: selectedProvider.name,
+          defaultEmail: selectedProvider.email,
+        },
+      });
     }
   };
 
@@ -104,9 +122,14 @@ const ProvidersPage = () => {
         >
           Eliminar
         </Button>
-        <Button startIcon={<ContactMail />} color="primary" href="/admin/providers/contact">
-            Contactar
-          </Button>
+        <Button
+          startIcon={<ContactMail />}
+          color="primary"
+          onClick={handleContact}
+          disabled={selectedRows.length !== 1}
+        >
+          Contactar
+        </Button>
       </Box>
       {deleteMessage && (
         <Box sx={{ mb: 2 }}>

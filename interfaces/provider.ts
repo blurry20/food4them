@@ -10,4 +10,4 @@ export interface IProvider {
     country: string;
     createdAt?: string;
     updatedAt?: string;
-}
+}1

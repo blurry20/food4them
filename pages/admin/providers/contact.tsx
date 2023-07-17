@@ -6,15 +6,16 @@ import axios from 'axios';
 const ContactPage = () => {
   const router = useRouter();
 
-  const [contactName, setContactName] = useState('');
-  const [contactEmail, setContactEmail] = useState('');
+  const { defaultName, defaultEmail } = router.query;
+
+  const [contactName, setContactName] = useState(defaultName || '');
+  const [contactEmail, setContactEmail] = useState(defaultEmail || '');
   const [contactMessage, setContactMessage] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     try {
       await axios.post('/api/contact', {
         name: contactName,
@@ -27,7 +28,7 @@ const ContactPage = () => {
       setContactEmail('');
       setContactMessage('');
 
-      router.push('/admin/providers'); // Redirige a la página /admin/providers
+      router.push('/admin/providers');
     } catch (error) {
       console.error(error);
       setErrorMessage('Error al enviar el correo electrónico');
@@ -75,3 +76,4 @@ const ContactPage = () => {
 };
 
 export default ContactPage;
+
